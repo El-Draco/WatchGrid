@@ -1,6 +1,6 @@
 import streamlit as st
 import asyncio
-from models.movie import Movie
+from schemas.movie import Movie
 from core.settings import settings
 
 st.set_page_config(page_title="WatchGrid")
