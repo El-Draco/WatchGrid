@@ -2,6 +2,10 @@ import streamlit as st
 import asyncio
 from models.movie import Movie
 from core.settings import settings
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 st.set_page_config(page_title="WatchGrid")
 st.title("📽️ WatchGrid")
