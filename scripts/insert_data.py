@@ -1,6 +1,6 @@
 import asyncio
 import requests
-from schemas.movie import Movie
+from models.movie import Movie
 from core.settings import settings
 from loguru import logger
 async def insert_movie(movie: Movie):
