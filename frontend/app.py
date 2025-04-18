@@ -1,17 +1,27 @@
 import streamlit as st
-import json
+import asyncio
+from models.movie import Movie
+from core.settings import settings
+
 st.set_page_config(page_title="WatchGrid")
+st.title("📽️ WatchGrid")
+st.subheader("Popular Picks")
 
-st.title("📽️WatchGrid")
-st.subheader("Your personal movie space. Coming Soon!")
+async def fetch_movies():
+    conn = await settings.get_connection()
+    try:
+        rows = await conn.fetch("SELECT * FROM Movie LIMIT 10")
+        return [Movie(**dict(r)) for r in rows]
+    finally:
+        await conn.close()
 
-with open("data/movies.json") as f:
-    movies = json.load(f)
 
-# st.subheader("Popular picks")
+# Call async inside Streamlit
+movies = asyncio.run(fetch_movies())
+
 cols = st.columns(5)
 for idx, movie in enumerate(movies):
-    with cols[idx%5]:
-        st.image(movie["image_url"])
-        st.write(movie["title"])
-        st.write(movie["release_date"], movie["language"])
+    with cols[idx % 5]:
+        st.image(movie.image_url, width=150)
+        st.markdown(f"**{movie.title}**")
+        st.caption(f"📅 {movie.release_date} | 🌐 {movie.language} | ⭐ {movie.avg_rating}")
