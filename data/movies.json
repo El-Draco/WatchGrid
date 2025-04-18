@@ -1,0 +1,42 @@
+[
+  {
+    "movie_id": 324544,
+    "title": "In the Lost Lands",
+    "release_date": "2025-02-27",
+    "language": "en",
+    "image_url": "https://image.tmdb.org/t/p/w500/iHf6bXPghWB6gT8kFkL1zo00x6X.jpg",
+    "rating": 6.3
+  },
+  {
+    "movie_id": 950387,
+    "title": "A Minecraft Movie",
+    "release_date": "2025-03-31",
+    "language": "en",
+    "image_url": "https://image.tmdb.org/t/p/w500/yFHHfHcUgGAxziP1C3lLt0q2T4s.jpg",
+    "rating": 6.103
+  },
+  {
+    "movie_id": 1197306,
+    "title": "A Working Man",
+    "release_date": "2025-03-26",
+    "language": "en",
+    "image_url": "https://image.tmdb.org/t/p/w500/6FRFIogh3zFnVWn7Z6zcYnIbRcX.jpg",
+    "rating": 6.253
+  },
+  {
+    "movie_id": 1045938,
+    "title": "G20",
+    "release_date": "2025-04-09",
+    "language": "en",
+    "image_url": "https://image.tmdb.org/t/p/w500/tSee9gbGLfqwvjoWoCQgRZ4Sfky.jpg",
+    "rating": 6.6
+  },
+  {
+    "movie_id": 1195506,
+    "title": "Novocaine",
+    "release_date": "2025-03-12",
+    "language": "en",
+    "image_url": "https://image.tmdb.org/t/p/w500/xmMHGz9dVRaMY6rRAlEX4W0Wdhm.jpg",
+    "rating": 6.883
+  }
+]
