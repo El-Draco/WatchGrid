@@ -1,38 +1,92 @@
 import streamlit as st
-import asyncio
+from core.auth import is_logged_in
 from models.movie import Movie
 from core.settings import settings
-import sys
-import os
-import time
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from loguru import logger
+# 1. Setup
+st.set_page_config(page_title="WatchGrid", page_icon="🎬")
 
-st.set_page_config(page_title="WatchGrid")
-st.title("📽️ WatchGrid")
+# 2. Header Section
+# 2. Header Section
+with st.container():
+    col1, col2 = st.columns([6, 2.9])
+    with col1:
+        st.markdown("## 🎥 WatchGrid")
+    with col2:
+        st.write("")  # minor vertical spacing
+        if is_logged_in():
+            logout_col = st.columns(1)
+            with logout_col[0]:
+                st.button("Logout", on_click=lambda: st.switch_page("pages/logout.py"))
+        else:
+            login_col1, login_col2 = st.columns([1, 1], gap="small")
+            with login_col1:
+                if st.button("Login"):
+                    st.switch_page("pages/login.py")
+            with login_col2:
+                if st.button("Register"):
+                    st.switch_page("pages/register.py")
+
+
+
+
+# 3. Sidebar
+with st.sidebar:
+    st.page_link("app.py", label="🏠 Home")
+    st.page_link("pages/watchlist.py", label="🎬 Watchlists")
+
+# if is_logged_in():
+    # st.markdown(f"#### 👋 Hello, User {st.session_state['user_id']}")
+
+
+# 4. Main Content
 st.subheader("Popular Picks")
 
-async def fetch_movies():
-    conn = await settings.get_connection()
+def fetch_movies():
+    conn = settings.get_connection()
+    cursor = conn.cursor()
     try:
-        rows = await conn.fetch("SELECT * FROM Movie LIMIT 10")
-        return [Movie(**dict(r)) for r in rows]
+        cursor.execute("SELECT * FROM Movie FETCH FIRST 10 ROWS ONLY")
+        rows = cursor.fetchall()
+        movies = []
+        for row in rows:
+            movie_data = {
+                "movie_id": row[0],
+                "title": row[1],
+                "release_date": row[2],
+                "duration": row[3],
+                "language": row[4],
+                "image_url": row[5],
+                "avg_rating": row[6]
+            }
+            movies.append(Movie(**movie_data))
+        return movies
+    except Exception as e:
+        st.error(f"Failed to load movies: {e}")
+        return []
     finally:
-        await conn.close()
+        cursor.close()
+        conn.close()
 
-
-# Call async inside Streamlit
-movies = asyncio.run(fetch_movies())
+movies = fetch_movies()
 
 cols = st.columns(5)
+
 for idx, movie in enumerate(movies):
     with cols[idx % 5]:
-        try:
-            # try to load the img one by one w some small delay
-            time.sleep(0.2)
-            st.image(movie.image_url, width=150)
-        except:
-            st.image("https://via.placeholder.com/150?text=No+Image", width=150)
+        with st.container():
+            try:
+                if movie.image_url:
+                    st.image(movie.image_url, width=150)
+                else:
+                    st.image("https://via.placeholder.com/150?text=No+Image", width=150)
+            except:
+                st.image("https://via.placeholder.com/150?text=No+Image", width=150)
 
-        # Text info
-        st.markdown(f"**{movie.title}**")
-        st.caption(f"📅 {movie.release_date} | 🌐 {movie.language} | ⭐ {movie.avg_rating}")
+            title = movie.title
+            if len(title) > 20:
+                title = title[:17] + "..."
+
+            st.markdown(f"<h5 style='text-align: center;'>{title}</h5>", unsafe_allow_html=True)
+            st.markdown(f"<div style='text-align: center; font-size: 12px;'>📅 {movie.release_date}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='text-align: center; font-size: 12px;'>🌐 {movie.language} | ⭐ {movie.avg_rating}</div>", unsafe_allow_html=True)

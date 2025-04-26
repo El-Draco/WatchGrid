@@ -1,15 +1,20 @@
-from core.db import get_connection
 import pytest
 from loguru import logger
+from core.settings import settings
+
 
 @pytest.mark.asyncio
-async def test_pg_connection():
+async def test_oracle_connection() -> None:
     try:
-        logger.info("Getting connection...")
-        conn = await get_connection()
-        logger.info("Running query...")
-        result = await conn.fetchval("SELECT 'Postgres connected!'")
-        await conn.close()
-        assert result == 'Postgres connected!'
+        conn = settings.get_connection()
+
+        cursor = conn.cursor()
+        cursor.execute("SELECT 'Oracle connected successfully!' FROM dual")
+        result = cursor.fetchone()
+        logger.info(result)
+        conn.close()
+
+        assert result[0] == 'Oracle connected successfully!'
+
     except Exception as e:
-        assert False, f"PostgreSQL connection failed: {e}"
+        assert False, f"Oracle connection failed: {e}"
