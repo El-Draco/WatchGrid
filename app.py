@@ -15,9 +15,8 @@ with st.container():
     with col2:
         st.write("")  # minor vertical spacing
         if is_logged_in():
-            logout_col = st.columns(1)
-            with logout_col[0]:
-                st.button("Logout", on_click=lambda: st.switch_page("pages/logout.py"))
+            if st.button("Logout"):
+                st.switch_page("pages/logout.py")
         else:
             login_col1, login_col2 = st.columns([1, 1], gap="small")
             with login_col1:
@@ -26,6 +25,7 @@ with st.container():
             with login_col2:
                 if st.button("Register"):
                     st.switch_page("pages/register.py")
+
 
 
 

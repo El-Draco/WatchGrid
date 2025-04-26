@@ -88,6 +88,7 @@ def logout_user():
     if "user_id" in st.session_state:
         del st.session_state["user_id"]
 
+
 def is_logged_in():
     """Check if user is logged in."""
     return "user_id" in st.session_state and st.session_state["user_id"] is not None
