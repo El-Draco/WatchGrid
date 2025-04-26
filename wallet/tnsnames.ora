@@ -1,0 +1,12 @@
+watchgrid_high = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.me-dubai-1.oraclecloud.com))(connect_data=(service_name=g1dabb9b4935de0_watchgrid_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+watchgrid_low = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.me-dubai-1.oraclecloud.com))(connect_data=(service_name=g1dabb9b4935de0_watchgrid_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+watchgrid_medium = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.me-dubai-1.oraclecloud.com))(connect_data=(service_name=g1dabb9b4935de0_watchgrid_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+watchgrid_tp = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.me-dubai-1.oraclecloud.com))(connect_data=(service_name=g1dabb9b4935de0_watchgrid_tp.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+watchgrid_tpurgent = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.me-dubai-1.oraclecloud.com))(connect_data=(service_name=g1dabb9b4935de0_watchgrid_tpurgent.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+
+
+
