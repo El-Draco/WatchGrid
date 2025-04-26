@@ -1,2 +1,5 @@
 .idea
 .python-version
+.env
+wallet.zip
+wallet/
