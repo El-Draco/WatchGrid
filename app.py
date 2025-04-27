@@ -1,3 +1,4 @@
+import time
 import streamlit as st
 from core.auth import is_logged_in
 from models.movie import Movie
@@ -104,7 +105,7 @@ for idx, movie in enumerate(movies):
                     st.image(movie.image_url, use_container_width=True)
                 else:
                     st.image("https://via.placeholder.com/150?text=No+Image", use_container_width=True)
-
+                    time.sleep(0.1)
             except:
                 st.image("https://via.placeholder.com/150?text=No+Image", use_column_width=True)
 
