@@ -4,6 +4,7 @@ import time
 with st.sidebar:
     st.page_link("app.py", label="🏠 Home")
     st.page_link("pages/watchlist.py", label="🎬 Watchlists")
+    st.page_link("pages/profile_settings.py", label="⚙️ Settings")
     
 
 st.title("Create a New WatchGrid Account ✨")
