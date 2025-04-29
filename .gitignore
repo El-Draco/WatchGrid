@@ -3,3 +3,4 @@
 .env
 wallet.zip
 wallet/
+.venv/
