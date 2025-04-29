@@ -15,10 +15,18 @@ def get_avatar_from_db(user_id):
 def save_avatar_to_db(uploaded_file, user_id):
     img = Image.open(uploaded_file)
     img = img.convert("RGB")
-    img.thumbnail((256, 256))
+    img.thumbnail((256, 256))  # Resize while maintaining aspect ratio
+
+    # Create a clean 256x256 white background
+    canvas = Image.new('RGB', (256, 256), (255, 255, 255))
+    img_position = (
+        (256 - img.width) // 2,
+        (256 - img.height) // 2
+    )
+    canvas.paste(img, img_position)
 
     buffer = BytesIO()
-    img.save(buffer, format="JPEG", optimize=True, quality=70)
+    canvas.save(buffer, format="JPEG", optimize=True, quality=70)
     binary_data = buffer.getvalue()
 
     conn = settings.get_connection()
@@ -33,4 +41,6 @@ def save_avatar_to_db(uploaded_file, user_id):
         "user_id": user_id
     })
     conn.commit()
+    cur.close()
+    conn.close()
 

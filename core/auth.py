@@ -121,14 +121,16 @@ def get_current_user():
         WHERE U.user_id = :user_id
     """, {"user_id": user_id})
     row = cur.fetchone()
-
     if not row:
+        cur.close()
+        conn.close()
         return None
     avatar_blob = row[5]
     avatar_mime = row[6]
     if avatar_blob is not None:
         avatar_blob = avatar_blob.read()  # Convert from LOB to bytes
-
+    cur.close()
+    conn.close()
     return {
         "user_id": row[0],
         "first_name": row[1],

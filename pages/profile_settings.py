@@ -5,7 +5,7 @@ from core.settings import settings
 from core.auth import get_current_user
 from core.profile_settings import save_avatar_to_db
 import imghdr
-
+import datetime
 from core.auth import is_logged_in
 
 def is_allowed_image(file_bytes):
@@ -47,10 +47,27 @@ uploaded_avatar = st.file_uploader("Upload new avatar", type=["jpg", "jpeg", "pn
 with st.form("profile_form"):
     fn = st.text_input("First Name", value=user["first_name"])
     ln = st.text_input("Last Name", value=user["last_name"])
-    dob = st.date_input("Date of Birth", value=user["date_of_birth"])
 
+    today = datetime.date.today()
+    min_dob = datetime.date(today.year - 100, 1, 1)  # 100 years ago
+    max_dob = datetime.date(today.year - 10, today.month, today.day)  # must be at least 10 y/o
+
+    # Fix type mismatch (datetime -> date)
+    existing_dob = user["date_of_birth"]
+    if isinstance(existing_dob, datetime.datetime):
+        existing_dob = existing_dob.date()
+
+    # Clamp if out of bounds
+    if existing_dob < min_dob or existing_dob > max_dob:
+        existing_dob = datetime.date(today.year - 18, 1, 1)  # default to 18 y/o
+
+    dob = st.date_input(
+        "Date of Birth",
+        value=existing_dob,
+        min_value=min_dob,
+        max_value=max_dob
+    )
     submit = st.form_submit_button("Save Changes")
-
     if submit:
         if not fn.strip():
             st.error("First name cannot be empty.")
