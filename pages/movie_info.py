@@ -209,36 +209,8 @@ else:
     st.error("Error: Movie data could not be fetched.")
 
 st.subheader("Reviews")
-# Review submitting
-def add_review_to_movie(review_data: Review):
-    conn = settings.get_connection()
-    cursor = conn.cursor()
-    
-    try:
-        cursor.execute("""
-            INSERT INTO Review (review_id, user_id, movie_id, platform_id, rating, review_date, headline, review_text, review_body)
-            VALUES (Review_SEQ.NEXTVAL, :user_id, :movie_id, :platform_id, :rating, SYSDATE, :headline, :review_text, :review_body)
-        """, {
-            "user_id": review_data.user_id,
-            "movie_id": review_data.movie_id,
-            "platform_id": review_data.platform_id,
-            "rating": review_data.rating,
-            "headline": review_data.headline,
-            "review_text": review_data.review_text,
-            "review_body": review_data.review_body
-        })
-        conn.commit()
-        st.success("Review added successfully!")
-    
-    except Exception as e:
-        conn.rollback()
-        st.error(f"Failed to add review: {e}")
-    
-    finally:
-        cursor.close()
-        conn.close()
 
-# form
+# Review form
 def insert_review_to_db(review: Review):
     conn = settings.get_connection()
     cursor = conn.cursor()
