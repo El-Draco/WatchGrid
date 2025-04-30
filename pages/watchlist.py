@@ -103,26 +103,29 @@ def listDistribution():
 distribution = listDistribution()
 
 def plotDistribution(distribution):
-    if not distribution:
+    if not distribution or sum(distribution) == 0:
         st.write("No data to display.")
         return
 
-    fig, ax = plt.subplots(figsize=(1, 1))
+    # Build label list aligned with distribution values
+    labels = list(status_map.keys())
+
+    fig, ax = plt.subplots(figsize=(5, 5))
 
     wedges, texts, autotexts = ax.pie(
         distribution,
-        labels=status_map.keys(),
-        autopct='%1.0f%%',
+        labels=labels,
+        autopct=lambda pct: f"{pct:.0f}%" if pct > 0 else '',
         startangle=90,
         colors=['#ff9999', '#66b3ff', '#99ff99', '#ffcc99', '#c2c2f0'],
-        textprops={'fontsize': 4},
+        textprops={'fontsize': 10},
     )
 
-    ax.set_title('Watch Status', fontsize=4)
-
+    ax.set_title('Watch Status', fontsize=14)
     ax.axis('equal')
 
     st.pyplot(fig)
+
 
 # Main
 # if not is_logged_in():
