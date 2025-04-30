@@ -128,6 +128,6 @@ for idx, movie in enumerate(movies):
             """, unsafe_allow_html=True)
 
             # Display movie title as a link
-            st.markdown(f"<h5 style='text-align: center;'><a target='_self' style='text-decoration: none; color: white' href='{movie_info_url}'>{title}</a></h5>", unsafe_allow_html=True)
+            st.markdown(f"<h5 style='text-align: center;'><a target='_self' style='text-decoration: none; color: black' href='{movie_info_url}'>{title}</a></h5>", unsafe_allow_html=True)
             st.markdown(f"<div style='text-align: center; font-size: 12px;'>🗕️ {movie.release_date}</div>", unsafe_allow_html=True)
             st.markdown(f"<div style='text-align: center; font-size: 12px;'>🌐 {movie.language} | ⭐ {movie.avg_rating}</div>", unsafe_allow_html=True)
