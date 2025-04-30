@@ -2,6 +2,8 @@ import streamlit as st
 from core.auth import is_logged_in
 from core.settings import settings
 from models.movie import Movie
+import matplotlib.pyplot as plt
+
 
 st.set_page_config(page_title="Watchlist", page_icon="🎬")
 st.title("🎬 My Watchlists")
@@ -62,11 +64,6 @@ def movie_grid(movies):
                 st.session_state.selected_movie = movie
                 st.switch_page("pages/viewMovie.py")
 
-# Main
-# if not is_logged_in():
-#     st.warning("Please login to access Watchlists.")
-#     st.stop()
-
 status_map = {
     'Plan to Watch': 'PLAN',
     'On Hold': 'HOLD',
@@ -74,6 +71,65 @@ status_map = {
     'Completed': 'COMPLETE',
     'Dropped': 'DROP'
 }
+
+def listDistribution():
+    conn = settings.get_connection()
+    cursor = conn.cursor()
+    counts = []
+    try:
+        for status in status_map.values():  # Iterate through each status in the map
+            cursor.execute("""
+                SELECT COUNT(*) FROM WATCHLIST 
+                WHERE USER_ID = :user_id AND WATCH_STATUS = :status 
+                GROUP BY WATCH_STATUS
+            """, {"user_id": user_id, "status": status})
+            
+            result = cursor.fetchall()  # Get the count for this status
+            if result:  # Ensure the query returned a result
+                counts.append(result[0][0])  # Append the count to the list
+
+        return counts  # Return the list of counts
+
+    except:
+        return []
+    finally:
+        cursor.close()
+        conn.close()
+
+distribution = listDistribution()
+
+def plotDistribution(distribution):
+    if not distribution:
+        st.write("No data to display.")
+        return
+
+    fig, ax = plt.subplots(figsize=(1, 1))
+
+    wedges, texts, autotexts = ax.pie(
+        distribution,
+        labels=status_map.keys(),
+        autopct='%1.0f%%',
+        startangle=90,
+        colors=['#ff9999', '#66b3ff', '#99ff99', '#ffcc99', '#c2c2f0'],
+        textprops={'fontsize': 4},
+    )
+
+    ax.set_title('Watch Status', fontsize=4)
+
+    ax.axis('equal')
+
+    st.pyplot(fig)
+
+# Main
+# if not is_logged_in():
+#     st.warning("Please login to access Watchlists.")
+#     st.stop()
+
+
+
+
+plotDistribution(distribution)
+
 
 selected_status = st.selectbox("Select Watchlist:", list(status_map.keys()))
 watchlist_id = get_watchlist_id(user_id, status_map[selected_status])
