@@ -60,7 +60,7 @@ def movie_grid(movies):
             st.image(movie.image_url or "https://via.placeholder.com/150", use_container_width=True)
             movie_info_url = f"/movie_info?movie_id={movie.movie_id}"
             st.markdown(
-                f"<h6 style='text-align: center;'><a target='_self' style='text-decoration: none; color: white' href='{movie_info_url}'>{movie.title}</a></h5>",
+                f"<h6 style='text-align: center;'><a target='_self' style='text-decoration: none; color: black' href='{movie_info_url}'>{movie.title}</a></h5>",
                 unsafe_allow_html=True)
             # st.markdown(f"**{movie.title[:25]}**")
             st.caption(f"🗓 {movie.release_date} | 🌐 {movie.language} | ⭐ {movie.avg_rating}")
