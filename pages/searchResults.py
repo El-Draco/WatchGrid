@@ -13,8 +13,13 @@ cols = st.columns(5)
 for idx, movie in enumerate(results):
     with cols[idx % 5]:
         st.image(movie.image_url or "https://via.placeholder.com/150", use_container_width=True)
-        st.markdown(f"**{movie.title[:25]}**")
+        # st.markdown(f"**{movie.title[:25]}**")
         st.caption(f"🗓 {movie.release_date} | 🌐 {movie.language} | ⭐ {movie.avg_rating}")
-        if st.button("📽️ View", key=f"search_view_{movie.movie_id}"):
-            st.session_state.selected_movie = movie
-            st.switch_page("pages/viewMovie.py")
+        movie_info_url = f"/movie_info?movie_id={movie.movie_id}"
+        st.markdown(
+            f"<h6 style='text-align: center;'><a target='_self' style='text-decoration: none; color: white' href='{movie_info_url}'>{movie.title}</a></h5>",
+            unsafe_allow_html=True)
+
+        # if st.button("📽️ View", key=f"search_view_{movie.movie_id}"):
+        #     st.session_state.selected_movie = movie
+            # st.switch_page("pages/viewMovie.py")
