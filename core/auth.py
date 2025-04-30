@@ -31,9 +31,22 @@ def register_user(email: str, password: str, first_name: str, last_name: str, da
         user_id = str(uuid.uuid4())
 
         cursor.execute("""
-            INSERT INTO Users (user_id, first_name, last_name, email, date_of_birth, password_hash)
-            VALUES (:1, :2, :3, :4, TO_DATE(:5, 'YYYY-MM-DD'), :6)
-        """, (user_id, first_name, last_name, email, date_of_birth, hashed_pw))
+                INSERT INTO Users (user_id, first_name, last_name, email, password_hash, date_of_birth)
+                VALUES (:user_id, :fn, :ln, :email, :pw, TO_DATE(:dob, 'YYYY-MM-DD'))
+            """, {
+            "user_id": user_id,
+            "fn": first_name,
+            "ln": last_name,
+            "email": email,
+            "pw": hashed_pw,
+            "dob": date_of_birth
+        })
+
+        # NEW: Insert blank UserProfileSettings row
+        cursor.execute("""
+                INSERT INTO UserProfileSettings (user_id)
+                VALUES (:user_id)
+            """, {"user_id": user_id})
 
         conn.commit()
         st.success("Account created successfully! Please login.")
@@ -92,3 +105,39 @@ def logout_user():
 def is_logged_in():
     """Check if user is logged in."""
     return "user_id" in st.session_state and st.session_state["user_id"] is not None
+
+def get_current_user():
+    user_id = st.session_state.get("user_id")
+    if not user_id:
+        return None
+
+    conn = settings.get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT U.user_id, U.first_name, U.last_name, U.email, U.date_of_birth,
+               P.avatar_blob, P.avatar_mime_type
+        FROM Users U
+        LEFT JOIN UserProfileSettings P ON U.user_id = P.user_id
+        WHERE U.user_id = :user_id
+    """, {"user_id": user_id})
+    row = cur.fetchone()
+    if not row:
+        cur.close()
+        conn.close()
+        return None
+    avatar_blob = row[5]
+    avatar_mime = row[6]
+    if avatar_blob is not None:
+        avatar_blob = avatar_blob.read()  # Convert from LOB to bytes
+    cur.close()
+    conn.close()
+    return {
+        "user_id": row[0],
+        "first_name": row[1],
+        "last_name": row[2],
+        "email": row[3],
+        "date_of_birth": row[4],
+        "avatar_blob": avatar_blob,
+        "avatar_mime_type": avatar_mime,
+    }
+

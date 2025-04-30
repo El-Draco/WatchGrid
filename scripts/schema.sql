@@ -18,10 +18,11 @@
 
 -- DROP TABLE "User";
 
+-- USERS table
 CREATE TABLE Users (
     user_id VARCHAR2(36),
     first_name VARCHAR2(100) NOT NULL,
-    last_name VARCHAR2(100),
+    last_name VARCHAR2(100) NOT NULL,  -- made NOT NULL for validation
     email VARCHAR2(255) NOT NULL UNIQUE,
     password_hash VARCHAR2(255) NOT NULL,
     date_of_birth DATE NOT NULL,
@@ -29,9 +30,12 @@ CREATE TABLE Users (
     CONSTRAINT Users_PK PRIMARY KEY (user_id)
 );
 
+-- USER PROFILE SETTINGS with avatar + optional notification prefs
 CREATE TABLE UserProfileSettings (
     user_id VARCHAR2(36),
     notification_pref VARCHAR2(50),
+    avatar_blob BLOB,
+    avatar_mime_type VARCHAR2(50),
 
     CONSTRAINT UserProfileSettings_PK PRIMARY KEY (user_id),
     CONSTRAINT UserProfileSettings_User_FK FOREIGN KEY (user_id) REFERENCES Users(user_id)
@@ -90,6 +94,8 @@ CREATE TABLE WatchList (
     CONSTRAINT WatchList_PK PRIMARY KEY (watchlist_id),
     CONSTRAINT WatchList_User_FK FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
+
+
 
 CREATE TABLE Review (
     review_id INT,

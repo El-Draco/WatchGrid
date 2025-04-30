@@ -8,6 +8,7 @@ st.set_page_config(page_title="WatchGrid", page_icon="🎥")
 with st.sidebar:
     st.page_link("app.py", label="🏠 Home")
     st.page_link("pages/watchlist.py", label="🎬 Watchlists")
+    st.page_link("pages/profile_settings.py", label="⚙️ Settings")
 
 # Immediately logout
 if is_logged_in():

@@ -61,6 +61,7 @@ with st.container():
 with st.sidebar:
     st.page_link("app.py", label="🏠 Home")
     st.page_link("pages/watchlist.py", label="🎥 Watchlists")
+    st.page_link("pages/profile_settings.py", label="⚙️ Settings")
 
 # 4. Main Content
 st.subheader("Popular Picks")
