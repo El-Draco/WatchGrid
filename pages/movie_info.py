@@ -51,6 +51,22 @@ else:
             cursor.close()
             conn.close()
 
+
+def get_platforms():
+    conn = settings.get_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT platform_id, name FROM PLATFORM")
+        rows = cursor.fetchall()
+        return {row[1]: row[0] for row in rows}  # {"Netflix": 1, "Prime Video": 2}
+    except Exception as e:
+        st.error(f"Failed to fetch platforms: {e}")
+        return {}
+    finally:
+        cursor.close()
+        conn.close()
+
+
 def fetch_movie_genre(movie_id):
     conn = settings.get_connection()
     cursor = conn.cursor()
@@ -258,7 +274,10 @@ if st.session_state.show_review_form:
     st.subheader("Write Your Review")
 
     user_id = user
-    platform_id = st.selectbox("Platform ID", [1, 2, 3])
+    platforms = get_platforms()
+    platform_name = st.selectbox("Platform", list(platforms.keys()))
+    platform_id = platforms[platform_name]
+
     rating = st.slider("Rating", 0.0, 10.0, 5.0, step=0.1)
     headline = st.text_input("Headline")
     review_text = st.text_area("Short Summary")
@@ -286,47 +305,46 @@ if st.session_state.show_review_form:
 def fetch_reviews_by_movie(movie_id: int):
     conn = settings.get_connection()
     cursor = conn.cursor()
-    
     try:
         cursor.execute("""
-            SELECT r.review_id, r.user_id, r.rating, r.review_date, r.headline, r.review_text, r.review_body
+            SELECT r.review_id, u.first_name, u.last_name, r.rating, r.review_date, r.headline, r.review_text, r.review_body
             FROM Review r
+            JOIN Users u ON r.user_id = u.user_id
             WHERE r.movie_id = :movie_id
             ORDER BY r.review_date DESC
         """, {"movie_id": movie_id})
-        
+
         rows = cursor.fetchall()
-        
         if rows:
             reviews = []
             for row in rows:
                 review = {
                     "review_id": row[0],
-                    "user_id": row[1],
-                    "rating": row[2],
-                    "review_date": row[3],
-                    "headline": row[4],
-                    "review_text": row[5],
-                    "review_body": row[6]
+                    "first_name": row[1],
+                    "last_name": row[2],
+                    "rating": row[3],
+                    "review_date": row[4],
+                    "headline": row[5],
+                    "review_text": row[6],
+                    "review_body": row[7]
                 }
                 reviews.append(review)
             return reviews
         else:
-            return None  # No reviews found
-    
+            return None
     except Exception as e:
         st.error(f"Failed to fetch reviews: {e}")
         return None
-    
     finally:
         cursor.close()
         conn.close()
+
 
 reviews = fetch_reviews_by_movie(movie_id)
 
 if reviews:
     for review in reviews:
-        st.markdown(f"**Review by** {review['user_id']}")
+        st.markdown(f"**Review by** {review['first_name']} {review['last_name']}")
         st.markdown(f"**Rating:** {review['rating']}/10")
         st.markdown(f"**Date:** {review['review_date']}")
         if review['headline']:
@@ -336,5 +354,8 @@ if reviews:
         if review['review_body']:
             st.markdown(f"**Review Body:** {review['review_body']}")
         st.markdown("-------------------------------------------")
+
 else:
     st.write("No reviews found for this movie.")
+
+
