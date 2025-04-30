@@ -55,8 +55,6 @@ with st.container():
                 st.switch_page("pages/register.py")
         st.markdown("</div>", unsafe_allow_html=True)
 
-
-
 # 3. Sidebar
 with st.sidebar:
     st.page_link("app.py", label="🏠 Home")
@@ -98,6 +96,9 @@ movies = fetch_movies()
 # (5 for large, 2 or 3 will feel better for mobile when layout=wide)
 cols = st.columns(2 if len(movies) <= 4 else 5)
 
+# Display movies as thumbnails with links to movie details
+cols = st.columns(2 if len(movies) <= 4 else 5)
+
 for idx, movie in enumerate(movies):
     with cols[idx % len(cols)]:
         with st.container():
@@ -106,14 +107,27 @@ for idx, movie in enumerate(movies):
                     st.image(movie.image_url, use_container_width=True)
                 else:
                     st.image("https://via.placeholder.com/150?text=No+Image", use_container_width=True)
-                    time.sleep(0.1)
             except:
                 st.image("https://via.placeholder.com/150?text=No+Image", use_column_width=True)
 
+            # Title and click event to go to the movie info page
             title = movie.title
             if len(title) > 20:
                 title = title[:17] + "..."
+            
+            # Generate the URL for the movie_info page, passing movie_id as a query parameter
+            movie_info_url = f"/movie_info?movie_id={movie.movie_id}"
+            
+            # Make title bold when hovered
+            st.markdown("""
+                <style>
+                    a:hover {
+                        font-weight: bold;
+                    }
+                </style>
+            """, unsafe_allow_html=True)
 
-            st.markdown(f"<h5 style='text-align: center;'>{title}</h5>", unsafe_allow_html=True)
+            # Display movie title as a link
+            st.markdown(f"<h5 style='text-align: center;'><a target='_self' style='text-decoration: none; color: white' href='{movie_info_url}'>{title}</a></h5>", unsafe_allow_html=True)
             st.markdown(f"<div style='text-align: center; font-size: 12px;'>🗕️ {movie.release_date}</div>", unsafe_allow_html=True)
             st.markdown(f"<div style='text-align: center; font-size: 12px;'>🌐 {movie.language} | ⭐ {movie.avg_rating}</div>", unsafe_allow_html=True)
